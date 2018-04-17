@@ -1,0 +1,7 @@
+./node_modules/*
+./public/*
+./dist/*
+./scripts/*
+webpack.config.js
+index.js
+*.scss

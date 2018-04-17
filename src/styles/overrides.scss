@@ -1,0 +1,24 @@
+/* OVERRIDES */
+
+@import './variables';
+
+body {
+  font-family: $main-font;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+
+  li {
+    list-style-type: none;
+
+    &:before {
+      display: none;
+    }
+  }
+}
