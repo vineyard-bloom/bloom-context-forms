@@ -10,9 +10,8 @@ It's suggested to use this package to manage your form state and validation, and
 
 ## Features:
 - Standardized form value updates, regardless of input type.
-- Integrates seamlessly with bloom-starter.
-- All form actions available through redux.
-- Fully customizable validation. Works through form.jsx and independently.
+- Integrates seamlessly with [bloom-starter](https://github.com/vineyard-bloom/bloom-starter) and [bloom-inputs](https://github.com/vineyard-bloom/bloom-inputs).
+- Fully customizable validation. Works through the `<FormProvider>` and independently.
 - Tracks any fields passed into `fieldNames`. Allows fully custom inputs without any special wrappers around each of them.
 
 ## Why use Bloom Forms?
@@ -20,16 +19,12 @@ It's suggested to use this package to manage your form state and validation, and
 * Built-in error handling
 * Built-in form population
 * Built-in accessibility
-* All field values and errors available through Redux
+* All field values and errors available through Context
 * Unopinionated about contents
 
 ## Includes:
-* Redux:
-    - formActions.js
-    - formReducer.js
-
-* Components:
-    - Form (form wrapper)
+* FormContext
+* FormProvider
 
 ## README Contents:
 ### General:
