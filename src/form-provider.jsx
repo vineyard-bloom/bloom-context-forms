@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import FormContext from './form-context'
+import { FormContext } from './form-context'
 
 import { validatorAggregator as validator } from './validator'
 
@@ -19,7 +19,7 @@ class FormProvider extends React.Component {
     ...initialFormState,
     checkField: this.checkField,
     checkMultipleFields: this.checkMultipleFields,
-    updateVisibleInputs: this.updateVisibleInputs,
+    updateVisibleFields: this.updateVisibleFields,
     updateField: this.updateField
   };
 
@@ -56,7 +56,15 @@ class FormProvider extends React.Component {
       this.focusOnFirst()
     }
 
-    this.getVisibleInputs()
+    this.updateVisibleFields()
+
+    // ensure arrow-bound methods are passed into context
+    this.setState({
+      checkField: this.checkField,
+      checkMultipleFields: this.checkMultipleFields,
+      updateVisibleFields: this.updateVisibleFields,
+      updateField: this.updateField
+    })
   }
 
   componentWillReceiveProps(newProps) {
@@ -93,6 +101,7 @@ class FormProvider extends React.Component {
   }
 
   checkField = async (e, fieldName=null) => {
+    // console.log(e, fieldName)
     const name = e && e.target
       ? e.target.getAttribute('name')
       : fieldName
@@ -101,9 +110,9 @@ class FormProvider extends React.Component {
       return
     } else {
       const elem = document.getElementsByName(name)[0]
-      const isRequired = elem.getAttribute('aria-required')|| elem.getAttribute('required')
-      const validateAs = elem.getAttribute('data-validate')
-      const value = this.state.fields[name].value
+      const isRequired = elem ? elem.getAttribute('aria-required') || elem.getAttribute('required') : false
+      const validateAs = elem ? elem.getAttribute('data-validate') : ''
+      const value = this.state.fields[name] && this.state.fields[name].value || ''
 
       try {
         // use the validator to find the status of all fields
@@ -124,10 +133,10 @@ class FormProvider extends React.Component {
         const allowDeletion = !isRequired || (value && isRequired)
 
         if (fieldStatus.isValid && allowDeletion) {
-          this.deleteFormError(fieldName)
+          this.deleteFormError(name)
           return Promise.resolve(true)
         } else {
-          this.addFormError(fieldName, fieldStatus.warnings[fieldName])
+          this.addFormError(name, fieldStatus.warnings[name])
           return Promise.resolve(false)
         }
       } catch(err) {
@@ -136,7 +145,7 @@ class FormProvider extends React.Component {
     }
   }
 
-  checkMultipleFields = async (fieldNamesArray) => {
+  checkMultipleFields = async (fieldNamesArray=[]) => {
     const allStatuses = await Promise.all(fieldNamesArray.map(name => this.checkField(null, name)))
     const isAllValid = allStatuses.reduce((a,b) => a && b)
     this.setState({ isAllValid })
@@ -187,8 +196,7 @@ class FormProvider extends React.Component {
       processingRequest: true
     })
 
-    const thisForm = this.processFormDataForSubmit({ ...this.state.fields })
-    const unconvertedForm = { ...this.state }
+    const thisForm = this.prepareFormDataForSubmit({ ...this.state.fields })
 
     const files = thisForm.files || new FormData()
     // if (thisForm.files) {
@@ -248,7 +256,7 @@ class FormProvider extends React.Component {
           // debugging helper
           console.log(
             `form id '${this.props.id}' has invalid fields`,
-            unconvertedForm
+            { ...this.state.fields }
           )
         }
       })
@@ -388,7 +396,7 @@ class FormProvider extends React.Component {
     }
   }
 
-  updateVisibleInputs = formId => {
+  updateVisibleFields = formId => {
     const id = formId || this.props.id || this.props.formId
     const form = document.getElementById(id)
     if (form) {
@@ -405,9 +413,14 @@ class FormProvider extends React.Component {
 
   render() {
     const { children, className, id, wrapInFormElement } = this.props
+    const childContext = {
+      ...this.state,
+      formId: id,
+      submitForm: this.forwardToSubmitForm
+    }
 
     return (
-      <FormContext.Provider value={{ [id]: this.state }}>
+      <FormContext.Provider value={{ [id]: childContext }}>
         {
           wrapInFormElement
           ? (

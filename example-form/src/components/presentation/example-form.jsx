@@ -1,6 +1,6 @@
 import React from 'react'
-import { Button } from 'bloom-forms'
 import {
+  Button,
   Checkbox,
   CurrencyInput,
   DateInput,
@@ -13,21 +13,12 @@ import {
   TextInput,
   ToggleSwitch
 } from 'bloom-inputs'
+import { connectForm } from 'bloom-context-forms'
 
-const ExampleForm = props => {
+const ExampleForm = ({ context }) => {
+  // console.log(context)
   // I am a reference form
-  const formData = props.formData || {
-    textinput: null,
-    password: null,
-    checkbox: null,
-    radio: null,
-    select: null,
-    toggle: null,
-    'file-simple': null,
-    'file-simple-2': null,
-    'file-droppable': null,
-    textarea: null
-  }
+  const formData = context.fields
   const radioOptions = [
     { label: 'Radio 1', id: 'radio-1' },
     { label: 'Radio 2', id: 'radio-2' },
@@ -46,8 +37,8 @@ const ExampleForm = props => {
 
   const toggleClick = e => {
     e.preventDefault()
-    props.manualFieldUpdate(
-      props.formId,
+    context.updateField(
+      context.formId,
       'toggle',
       formData && formData.toggle && !formData.toggle.value
     )
@@ -62,7 +53,7 @@ const ExampleForm = props => {
         label='Text Input'
         showLabel
         value={formData.textinput ? formData.textinput.value : ''}
-        onChange={props.updateForm}
+        onChange={context.updateField}
         placeholder='Regular old Text Input'
       />
       <TextInput
@@ -74,7 +65,7 @@ const ExampleForm = props => {
         isPassword
         required
         value={formData.password ? formData.password.value : ''}
-        onChange={props.updateForm}
+        onChange={context.updateField}
         validateAs='not-empty'
       />
       <TextInput
@@ -84,9 +75,9 @@ const ExampleForm = props => {
         showLabel
         required
         value={formData.onlyBloop ? formData.onlyBloop.value : ''}
-        onChange={props.updateForm}
+        onChange={context.updateField}
         validateAs='must-equal-bloop'
-        onBlur={props.checkField}
+        onBlur={context.checkField}
         error={
           formData.onlyBloop && formData.onlyBloop.error
             ? formData.onlyBloop.error
@@ -98,7 +89,7 @@ const ExampleForm = props => {
         id='multiple-check-button'
         onClick={e => {
           e.preventDefault()
-          props.checkMultipleFields('example-form', ['onlyBloop', 'password'])
+          context.checkMultipleFields(['onlyBloop', 'password'])
         }}
       />
       <Button
@@ -106,7 +97,7 @@ const ExampleForm = props => {
         id='visible-check-button'
         onClick={e => {
           e.preventDefault()
-          props.checkForVisibleFields(props.formId)
+          context.updateVisibleFields(context.formId)
         }}
       />
       <Checkbox
@@ -114,18 +105,18 @@ const ExampleForm = props => {
         checked={(formData.checkbox && formData.checkbox.value) || ''}
         id='checkbox'
         name='checkbox'
-        onChange={props.updateForm}
+        onChange={context.updateField}
         showLabel
       />
       <RadioGroup
         options={radioOptions}
-        onChange={props.updateForm}
+        onChange={context.updateField}
         name='radio'
         value={formData.radio ? formData.radio.value : ''}
       />
       <RadioButtonGroup
         options={radioOptions2}
-        onChange={props.updateForm}
+        onChange={context.updateField}
         name='radio2'
         value={formData.radio2 ? formData.radio2.value : ''}
       />
@@ -135,7 +126,7 @@ const ExampleForm = props => {
         label='Date Input'
         showLabel
         value={formData.date ? formData.date.value : ''}
-        onChange={props.updateForm}
+        onChange={context.updateField}
       />
       <CurrencyInput
         label='Currency Input'
@@ -144,7 +135,7 @@ const ExampleForm = props => {
         coinIcon={
           <img src='http://www.freeiconspng.com/uploads/bitcoin-coin-currency-digital-currency-digital-walet-money-icon-30.png' />
         }
-        onChange={props.updateForm}
+        onChange={context.updateField}
         id='currency'
         name='currency'
         currency='BTC'
@@ -165,8 +156,8 @@ const ExampleForm = props => {
               ? formData.select.value
               : ''
           }
-          onBlur={props.checkField}
-          onChange={props.manualFieldUpdate}
+          onBlur={context.checkField}
+          onChange={context.updateField}
           required
           showLabel
           label='Select Input'
@@ -189,7 +180,7 @@ const ExampleForm = props => {
               ? formData.select2.value
               : ''
           }
-          onChange={props.manualFieldUpdate}
+          onChange={context.updateField}
           showLabel
           label='Select Input -- No TypeAhead'
           error={
@@ -217,7 +208,7 @@ const ExampleForm = props => {
           name='file-simple'
           label='Basic File Input'
           id='file-simple'
-          onChange={props.manualFieldUpdate}
+          onChange={context.updateField}
           formId='example-form'
           multiple={false}
         />
@@ -226,7 +217,7 @@ const ExampleForm = props => {
           name='file-simple-2'
           label='Multi File Input'
           id='file-simple-2'
-          onChange={props.manualFieldUpdate}
+          onChange={context.updateField}
           formId='example-form'
           multiple
         />
@@ -235,7 +226,7 @@ const ExampleForm = props => {
         name='file-droppable'
         label='Droppable File Input'
         id='file-droppable'
-        onChange={props.manualFieldUpdate}
+        onChange={context.updateField}
         formId='example-form'
         files={
           (formData['file-droppable'] && formData['file-droppable'].value) || []
@@ -245,17 +236,17 @@ const ExampleForm = props => {
         formData={formData || { message: 'why am i undefined?' }}
         name='textarea'
         label='Large Text Area'
-        onChange={props.updateForm}
+        onChange={context.updateField}
         showLabel
       />
       <Button
         className='Btn AuthForm-submit-button u-justify-center'
         contents='Submit Button'
         id='example-form-submit-button'
-        onClick={props.submitForm}
+        onClick={context.submitForm}
       />
     </form>
   )
 }
 
-export default ExampleForm
+export default props => connectForm('exampleForm', props)(ExampleForm)

@@ -1,6 +1,5 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { Form, formActions } from 'bloom-forms'
+import { FormProvider, getCurrentContext } from 'bloom-context-forms'
 
 import ExampleForm from './presentation/example-form'
 
@@ -10,7 +9,8 @@ class ExampleFormContainer extends React.Component {
   }
 
   submitForm = async (formData, files, successCallback, failCallback) => {
-    console.log(formData)
+    // console.log(formData)
+    console.log(getCurrentContext('exampleForm'))
     try {
       // const res = await callToWebService(formData)
       // this.rerouteAfterSubmit(res)
@@ -47,36 +47,16 @@ class ExampleFormContainer extends React.Component {
     }
 
     return (
-      <Form
-        id='example-form'
+      <FormProvider
+        id='exampleForm'
         fieldNames={fieldNames}
         submitForm={this.submitForm}
         validationHelp={validationHelp}
       >
-        <ExampleForm
-          checkMultipleFields={this.props.checkMultipleFields}
-          checkForVisibleFields={this.props.checkForVisibleFields}
-        />
-      </Form>
+        <ExampleForm />
+      </FormProvider>
     )
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    checkMultipleFields: (formId = 'example-form', fieldNames) =>
-      dispatch(formActions.checkMultipleFields(formId, fieldNames)),
-    checkForVisibleFields: (formId = 'example-form', fieldNames) =>
-      dispatch(formActions.checkForVisibleFields(formId, fieldNames))
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    user: state.user || {}
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(
-  ExampleFormContainer
-)
+export default ExampleFormContainer
