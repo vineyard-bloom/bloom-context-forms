@@ -130,6 +130,7 @@ const ExampleForm = ({ context }) => {
       />
       <CurrencyInput
         label='Currency Input'
+        formData={formData}
         showLabel
         isRequired
         coinIcon={
@@ -139,11 +140,6 @@ const ExampleForm = ({ context }) => {
         id='currency'
         name='currency'
         currency='BTC'
-        value={
-          formData.currency && formData.currency.value
-            ? formData.currency.value
-            : '0'
-        }
       />
       <div style={{ zIndex: 5 }}>
         {/* notice the z-indices to help make sure select inputs overlap properly */}
@@ -233,7 +229,7 @@ const ExampleForm = ({ context }) => {
         }
       />
       <TextArea
-        formData={formData || { message: 'why am i undefined?' }}
+        formData={formData}
         name='textarea'
         label='Large Text Area'
         onChange={context.updateField}

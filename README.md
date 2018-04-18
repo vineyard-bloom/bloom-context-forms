@@ -14,7 +14,7 @@ It's suggested to use this package to manage your form state and validation, and
 - Fully customizable validation. Works through the `<FormProvider>` and independently.
 - Tracks any fields passed into `fieldNames`. Allows fully custom inputs without any special wrappers around each of them.
 
-## Why use Bloom Forms?
+## Why use Bloom Context Forms?
 * Built-in state management
 * Built-in error handling
 * Built-in form population
