@@ -45,7 +45,7 @@ const ExampleForm = ({ context }) => {
   }
 
   return (
-    <form id='example-form' className='Form AuthForm' noValidate>
+    <form id='exampleForm' className='Form AuthForm' noValidate>
       <h3 className='AuthForm-header'>Example Form</h3>
       <TextInput
         id='textinput'
