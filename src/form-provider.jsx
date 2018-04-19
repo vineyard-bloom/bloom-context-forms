@@ -356,7 +356,7 @@ class FormProvider extends React.Component {
     return thisForm
   }
 
-  updateField = (e=null, fieldName, value, optType='text', multi=false) => {
+  updateField = (e=null, fieldName, value, optType, multi=false) => {
     if (e && e.target) {
       if (!fieldName) {
         fieldName = e.target.getAttribute('name')
@@ -366,7 +366,7 @@ class FormProvider extends React.Component {
       const type = optType ||
         (
           document.getElementById(fieldName) || [ ...document.getElementsByName(fieldName) ][0]
-        ).getAttribute('type')
+        ).getAttribute('type') || 'text'
 
       if (type === 'checkbox') {
         val = e.target.checked
@@ -386,11 +386,21 @@ class FormProvider extends React.Component {
         }
       }))
     } else {
+      let val = value || ''
+      const type = optType ||
+        (
+          document.getElementById(fieldName) || [ ...document.getElementsByName(fieldName) ][0]
+        ).getAttribute('type') || 'text'
+
+      if (type === 'checkbox') {
+        val = !this.state.fields[fieldName].value
+      }
+
       this.setState((state) => ({
         dirtyFields: state.dirtyFields.indexOf(fieldName) > -1 ? state.dirtyFields : [ ...state.dirtyFields, fieldName ],
         fields: {
           ...state.fields,
-          [fieldName]: { ...state.fields[fieldName], value: multi ? [ ...state.fields[fieldName], value ] : value }
+          [fieldName]: { ...state.fields[fieldName], value: multi ? [ ...state.fields[fieldName], val ] : val }
         }
       }))
     }
