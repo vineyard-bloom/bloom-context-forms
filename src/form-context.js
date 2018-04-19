@@ -4,6 +4,7 @@ import deepFreeze from 'deep-freeze-strict'
 export const FormContext = React.createContext()
 
 export function getCurrentContext(formId) {
+  console.log(FormContext._currentValue)
   return formId
     ? deepFreeze(FormContext._currentValue[formId])
     : new Error('You must pass in the id of the form whose context you want to retrieve.')

@@ -196,7 +196,7 @@ class FormProvider extends React.Component {
       processingRequest: true
     })
 
-    const thisForm = this.prepareFormDataForSubmit({ ...this.state.fields })
+    const thisForm = { ...this.prepareFormDataForSubmit({ ...this.state.fields }) }
 
     const files = thisForm.files || new FormData()
     // if (thisForm.files) {
