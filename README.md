@@ -3,7 +3,7 @@
 #### A context-only alternative to [bloom-forms](https://github.com/vineyard-bloom/bloom-forms). No Redux here.
 
 ## What is this?
-Bloom-Context-Forms provides a Form wrapper that manages your internal form state inside React 16's context. All updates, validation, and other hooks are available through connecting your component to the specific Context it consumes.
+Bloom-Context-Forms provides a FormProvider wrapper that manages your internal form state inside React 16's context. All updates, validation, and other hooks are available through connecting your component to the specific Context it consumes.
 
 ## Suggested Use
 It's suggested to use this package to manage your form state and validation, and use the [Bloom Inputs](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/inputs.md) package for accessible, stylable inputs.
