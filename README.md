@@ -32,25 +32,24 @@ It's suggested to use this package to manage your form state and validation, and
 - [Basic Usage](https://github.com/vineyard-bloom/bloom-forms#basic-usage)
 - [Contributing](https://github.com/vineyard-bloom/bloom-forms#contributing)
 
-### [`<Form/>` Wrapper](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/form.md)
+### [`FormContext` and its helper methods](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/form-context.md)
+### [`<FormProvider />` Wrapper](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/form-provider.md)
 ### [What Props are passed down to child inputs?](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/children-props.md)
 ### [Validation & Error Handling](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/validate-as-options.md)
-### [Redux -- Reducers, Actions, and Store format](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/redux.md)
-### [Comparisons to other Redux form libraries](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/comparison.md)
 
 ## Setup
 To use this package, you can install with either npm or yarn.
 ```
-npm install bloom-forms --save
+npm install bloom-context-forms --save
 ```
 or
 ```
-yarn add bloom-forms
+yarn add bloom-context-forms
 ```
 
 To import the files/components in this package, import like:
 ```
-import { Form, formReducer } from 'bloom-forms';
+import { FormProvider, update } from 'bloom-context-forms';
 ```
 
 ## Contributing

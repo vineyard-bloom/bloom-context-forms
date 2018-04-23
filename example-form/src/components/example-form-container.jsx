@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormProvider, connectForm, getCurrentContext } from 'bloom-context-forms'
+import { FormProvider, getCurrentContext } from 'bloom-context-forms'
 
 import ExampleForm from './presentation/example-form'
 
@@ -11,7 +11,7 @@ class ExampleFormContainer extends React.Component {
   submitForm = async (formData, files, successCallback, failCallback) => {
     // console.log(formData)
     // getCurrentContext('exampleForm')
-    // console.log(getCurrentContext('exampleForm'))
+    console.log(getCurrentContext('exampleForm'))
     try {
       // const res = await callToWebService(formData)
       // this.rerouteAfterSubmit(res)

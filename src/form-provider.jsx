@@ -14,6 +14,11 @@ const initialFormState = {
   visibleFields: []
 }
 
+// context should be treated immutably outside this library, so don't expose this to the dev
+const updateContextDangerously = (id, state) => {
+  return FormContext._currentValue.updateForm(id, state)
+}
+
 class FormProvider extends React.Component {
   state = {
     ...initialFormState,
@@ -64,6 +69,8 @@ class FormProvider extends React.Component {
       checkMultipleFields: this.checkMultipleFields,
       updateVisibleFields: this.updateVisibleFields,
       updateField: this.updateField
+    }, () => {
+      updateContextDangerously(this.props.id, this.state)
     })
   }
 
@@ -97,7 +104,9 @@ class FormProvider extends React.Component {
         ...state.fields,
         [fieldName]: { ...state.fields[fieldName], error }
       }
-    }))
+    }), () => {
+      updateContextDangerously(this.props.id, this.state)
+    })
   }
 
   checkField = async (e, fieldName=null) => {
@@ -155,12 +164,16 @@ class FormProvider extends React.Component {
     this.setState(state => ({
       ...state,
       ...initialFormState
-    }))
+    }), () => {
+      updateContextDangerously(this.props.id, this.state)
+    })
   }
 
   createForm = (data) => {
     this.setState({
       ...data
+    }, () => {
+      updateContextDangerously(this.props.id, this.state)
     })
   }
 
@@ -171,7 +184,9 @@ class FormProvider extends React.Component {
           ...state.fields,
           [fieldName]: { value: state.fields[fieldName].value }
         }
-      }))
+      }), () => {
+        updateContextDangerously(this.props.id, this.state)
+      })
     }
   }
 
@@ -194,6 +209,8 @@ class FormProvider extends React.Component {
     this.setState({
       attemptedSubmit: true,
       processingRequest: true
+    }, () => {
+      updateContextDangerously(this.props.id, this.state)
     })
 
     const thisForm = { ...this.prepareFormDataForSubmit({ ...this.state.fields }) }
@@ -229,6 +246,8 @@ class FormProvider extends React.Component {
           const failCallback = () => {
             this.setState({
               processingRequest: false
+            }, () => {
+              updateContextDangerously(this.props.id, this.state)
             })
           }
           if (this.props.testMode) {
@@ -251,6 +270,8 @@ class FormProvider extends React.Component {
 
           this.setState({
             processingRequest: false
+          }, () => {
+            updateContextDangerously(this.props.id, this.state)
           })
 
           // debugging helper
@@ -384,7 +405,9 @@ class FormProvider extends React.Component {
           ...state.fields,
           [fieldName]: { ...state.fields[fieldName], value: multi ? [ ...state.fields[fieldName], val ] : val }
         }
-      }))
+      }), () => {
+        updateContextDangerously(this.props.id, this.state)
+      })
     } else {
       let val = value || ''
       const type = optType ||
@@ -402,7 +425,9 @@ class FormProvider extends React.Component {
           ...state.fields,
           [fieldName]: { ...state.fields[fieldName], value: multi ? [ ...state.fields[fieldName], val ] : val }
         }
-      }))
+      }), () => {
+        updateContextDangerously(this.props.id, this.state)
+      })
     }
   }
 
@@ -417,6 +442,8 @@ class FormProvider extends React.Component {
       }
       this.setState({
         visibleFields: [ ...fieldNames ]
+      }, () => {
+        updateContextDangerously(this.props.id, this.state)
       })
     }
   }
@@ -428,6 +455,8 @@ class FormProvider extends React.Component {
       formId: id,
       submitForm: this.forwardToSubmitForm
     }
+
+    // console.log(FormContext._currentValue)
 
     return (
       <FormContext.Provider value={{ [id]: childContext }}>
