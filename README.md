@@ -50,7 +50,7 @@ yarn add bloom-context-forms
 
 To import the files/components in this package, import like:
 ```
-import { FormProvider, update } from 'bloom-context-forms';
+import { FormProvider, getCurrentContext } from 'bloom-context-forms';
 ```
 
 ## Contributing
