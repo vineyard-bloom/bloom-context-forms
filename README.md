@@ -26,8 +26,10 @@ It's suggested to use this package to manage your form state and validation, and
 * Only dependency is React 16, but values are available anywhere (by default, they are Read Only outside of the form they belong to)
 
 ## Includes:
-* FormContext
+* connectForm (function)
 * FormProvider
+* getCurrentContext (function)
+* validator
 
 ## README Contents:
 ### General:
