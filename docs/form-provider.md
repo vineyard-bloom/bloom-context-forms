@@ -10,54 +10,58 @@
 - [Forms with Switch Inside](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/form.md#forms-with-switch-inside)
 
 ## Required Props
-### Field Names
-`fieldNames` is a required prop when using form.jsx. It uses this array to know which fields to track. Each entry in fieldNames can be a string, like `'firstName'`, or an object with a type and name, like `{ name: 'isFullTimeEmployee', type: 'checkbox' }`. It's recommended to use the second version for checkboxes and radios.
-### Submit Form
-`submitForm` must be a function that receives the formData, file data, and two callbacks (success and fail). See 'Submitting Forms' below.
-### Id
-`id` is just the id of your form. You should make your jsx component `<form id>` match.
+- `fieldNames` is a required prop when using form.jsx. It uses this array to know which fields to track. Each entry in fieldNames can be a string, like `'firstName'`, or an object with a type and name, like `{ name: 'isFullTimeEmployee', type: 'checkbox' }`. It's recommended to use the second version for checkboxes and radios.
+
+- `submitForm`
+  a function that receives the formData, file data, and two callbacks (success and fail). See 'Submitting Forms' below.
+
+- `id`
+  a string for id of your form. You should make your jsx component `<form id>` match.
 
 [Back to Contents](https://github.com/vineyard-bloom/bloom-forms#readme-contents)
 
 ## Optional Props
-### Validation Help
-Used to customize bloom-form's built-in validation. See 'Validation' below.
-### Ignore Focus On First Element
-By default the first input will be focused on for accessibility reasons.  Set this prop to false to offset default behavior.
-### Preserve After Unmount
-By default, the form will clear its data after unmounting from the ui. This means that a registration form will delete its data after you route to a new page. If `preserveAfterUnmount` is true, this will prevent the form from clearing, and you'll be able to return to that form and see the data still there.
-### Prepopulate Data
-`prepopulateData` is a json object, usually return from an ajax GET request, that fills in the fields in your form. The keys in this json object should match up with the fieldNames you passed into the form.
-### Wrap in Form Element
-`wrapInFormElement` receives a boolean that will renders the form children inside of `<form></form>` instead of inside a React Fragment.
+- `validationHelp`
+  Object used to customize bloom-form's built-in validation. See 'Validation' below.
+- `ignoreFocusOnFirstElement`
+  By default the first input will be focused on for accessibility reasons.  Set this prop to false to offset default behavior.
+- `preserveAfterUnmount`
+  By default, the form will clear its data after unmounting from the ui. This means that a registration form will delete its data after you route to a new page. If `preserveAfterUnmount` is true, this will prevent the form from clearing, and you'll be able to return to that form and see the data still there.
+- `prepopulateData`
+  a json object, usually return from an ajax GET request, that fills in the fields in your form. The keys in this json object should match up with the fieldNames you passed into the form.
+- `wrapInFormElement`
+  a boolean that will renders the form children inside of `<form></form>` instead of inside a React Fragment.
 
 [Back to Contents](https://github.com/vineyard-bloom/bloom-forms#readme-contents)
 
 ## Updating Form State
-By default, inputs' values are updated via the `updateForm` method. It receives the event coming from changing that input and sets that field's value for you. You can stick it right on an input like:
+Values can updated via the `updateField` method. You can stick it right on an input that passing in the event to onChange like:
 ```
-<TextInput onChange={ this.props.updateForm } />
+<TextInput onChange={ this.props.updateField } />
 ```
-
-You can also manually update a field. Say you have a button that changes the value of a text input. You would want to manually pass in which values and which fields are needed. You can do this through `manualFieldUpdate`, which accepts four parameters: the formId, the fieldName, the fieldValue, and the type of input (html5 standard input types preferred, such as 'text', 'checkbox', and 'radio'). To use:
+If the field passes in the field's name and value to update instead of the event, you can also use `updateField`, like so:
 ```
-const { formData, formId, manualFieldUpdate } = this.props
+<SelectInput onChange={ this.props.updateField } />
+```
+Behind the scenes, this method either receives the event and grabs the value from `e.target.value`, or it receives `fieldName` and `value` attributes to update the value manually.
 
-...
-
-    <Button onClick={ () => manualFieldUpdate(formId, 'choice', 'Choice #1 - Blah', 'text') }>
-      Choice #1
-    </Button>
-    <TextInput name='choice' value={ formData.choice.value } />
-
-...
+The function looks like this (pseudocode):
+```
+function (e, fieldName, value, type='text') {
+  // type can be useful for updating files. Bloom Inputs handle type for you.
+  if (!e) {
+    // use fieldName and value to set value
+  } else {
+    // use e.target.value and e.target.getAttribute('name') to set value
+  }
+}
 ```
 
 [Back to Contents](https://github.com/vineyard-bloom/bloom-forms#readme-contents)
 
 ## Validation
-All the existing inputs have support for a `validateAs` string and an `onBlur` (when that field loses focus) function prop, which should call `props.checkField`. You can add more types of validaton to the validator by passing in a `validationHelp` prop to `<Form />`.
 
+### Set Up
 `validationHelp` should be an object with two fields: a json object of error messages, and a dictionary of custom `validateAs` keys with their test functions that return errors.
 - Example:
 ```
@@ -67,46 +71,63 @@ validationHelp = {
     'min-length': 'This field must be at least <LIMIT> chars.'
   },
   dictionary: {
-    'min-length-2': (testData) => testData.length && testData.length >= 2 ? null : errorLanguage['min-length'].replace('<LIMIT>', 2),
-    'min-length-8': (testData) => testData.length && testData.length >= 8 ? null : errorLanguage['min-length'].replace('<LIMIT>', 8)
+    'min-length-2': (testData) => testData && testData.length >= 2 ? null : errorLanguage['min-length'].replace('<LIMIT>', 2),
+    'min-length-8': (testData) => testData && testData.length >= 8 ? null : errorLanguage['min-length'].replace('<LIMIT>', 8)
   }
 }
 ```
 
 To use this set up, an example field would look like:
 ```
-<TextInput name='pet' validateAs='min-length-2' onBlur={ props.checkField } onChange={ props.updateForm }
-  value={ formData.pet.value } error={ formData.pet.error } />
+  <TextInput
+    error={ formData.pet.error }
+    name='pet'
+    onBlur={ props.checkField }
+    onChange={ props.updateField }
+    validateAs='min-length-2'
+    value={ formData.pet.value }
+  />
 ```
+and the `<FormProvider>` around it would look like:
+```
+  <FormProvder validationHelp={validationHelp} ...>
+    <PetForm/>
+  </FormProvider>
+```
+
+### Check individual field onBlur
+`checkField` is availabe through props to check one element. Usually this is used when a field is blurred. It receives the event object, and/or the name of the field to check.
+
+### Check multiple fields
+`checkMultipleFields` receives an array of field names and checks them synchronously.
 
 [Back to Contents](https://github.com/vineyard-bloom/bloom-forms#readme-contents)
 
-## Prepopulating `<Form />`
+## Prepopulating `<FormProvider />`
 To have your form populate with existing data, pass in a JSON object of key/value pairs where the keys match your fieldNames prop.
 
 You may have to use an ajax call to grab the necessary data. Form.jsx will load those values as soon as it receives them.
 
 ## Submitting Forms
-Form.jsx will handle your form data, but you should write your own submitForm function and pass it in as a prop. Your submitForm should be able to handle formData, a FormData object of files, and both a success and fail callback. You *must* call the success and fail callbacks for the form to update `pendingRequest` -- otherwise, anything showing loading/pending that's dependent on that field will continue to spin endlessly.
+`<FormProvider/>` will handle your form data, but you should write your own submitForm function and pass it in as a prop. Your submitForm should be able to handle formData, a FormData object of files, and both a success and fail callback. You *must* call the success and fail callbacks for the form to update `pendingRequest` -- otherwise, anything showing loading/pending that's dependent on that field will continue to spin endlessly.
 
 An example submitForm might look like:
 ```
-submitForm = (formData, files, successCallback, failCallback) => {
-  WebService.post(formData)
-    .then((res) => {
-      // trigger a success alert
-      successCallback()
-    })
-    .catch((err) => {
-      // trigger an error alert
-      failCallback()
-    })
+submitForm = async (formData, files, successCallback, failCallback) => {
+  try {
+    const res = await WebService.post(formData)
+    successCallback()
+  } catch(err) {
+    // trigger an error alert
+    failCallback()
+  }
 }
 ```
 
 [Back to Contents](https://github.com/vineyard-bloom/bloom-forms#readme-contents)
 
 ## Forms with Switch Inside
+// may not need this -- context continues to be passed down in most cases
 To make forms with Routes inside, you will need to make the Switch its own Container inside another form container and pass in the props with a spread operator.
 
 For example:
@@ -135,20 +156,6 @@ class RegistrationFormSwitch extends React.Component {
   }
 }
 ```
-Now StepOne and StepTwo will both be able to receive their needed Form props, such as `updateForm` and `addFormError`.
+Now StepOne and StepTwo will both be able to receive their needed Form props, such as `updateField` and `addFormError`.
 
 [Back to Contents](https://github.com/vineyard-bloom/bloom-forms#readme-contents)
-
-
-## NOTE ON Z-INDEX
-To ensure that SelectInputs in rows above other SelectInputs render on top of them, their wrapping row div must have a higher z-index than the row below.
-
-For example:
-```
-<div style={{ zIndex: 2 }} className='LoginForm-row'>
-  <SelectInput />
-</div>
-<div style={{ zIndex: 1 }} className='LoginForm-row'>
-  <SelectInput />
-</div>
-```

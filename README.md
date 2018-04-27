@@ -22,6 +22,8 @@ It's suggested to use this package to manage your form state and validation, and
 * Built-in accessibility
 * All field values and errors available through Context
 * Unopinionated about contents
+* Slim size
+* Only dependency is React 16, but values are available anywhere (by default, they are Read Only outside of the form they belong to)
 
 ## Includes:
 * FormContext
