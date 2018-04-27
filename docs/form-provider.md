@@ -1,13 +1,13 @@
 # The `<Form/>` Wrapper
 
 ### Usage:
-- [Required Props](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/form.md#required-props)
-- [Optional Props](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/form.md#optional-props)
-- [Updating Form State](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/form.md#updating-form-state)
-- [Validation](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/form.md#validation)
-- [Prepopulating Form](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/form.md#prepopulating-form)
-- [Submitting Forms](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/form.md#submitting-forms)
-- [Forms with Switch Inside](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/form.md#forms-with-switch-inside)
+- [Required Props](https://github.com/vineyard-bloom/bloom-context-forms/blob/master/docs/form.md#required-props)
+- [Optional Props](https://github.com/vineyard-bloom/bloom-context-forms/blob/master/docs/form.md#optional-props)
+- [Updating Form State](https://github.com/vineyard-bloom/bloom-context-forms/blob/master/docs/form.md#updating-form-state)
+- [Validation](https://github.com/vineyard-bloom/bloom-context-forms/blob/master/docs/form.md#validation)
+- [Prepopulating Form](https://github.com/vineyard-bloom/bloom-context-forms/blob/master/docs/form.md#prepopulating-form)
+- [Submitting Forms](https://github.com/vineyard-bloom/bloom-context-forms/blob/master/docs/form.md#submitting-forms)
+- [Forms with Switch Inside](https://github.com/vineyard-bloom/bloom-context-forms/blob/master/docs/form.md#forms-with-switch-inside)
 
 ## Required Props
 - `fieldNames` is a required prop when using form.jsx. It uses this array to know which fields to track. Each entry in fieldNames can be a string, like `'firstName'`, or an object with a type and name, like `{ name: 'isFullTimeEmployee', type: 'checkbox' }`. It's recommended to use the second version for checkboxes and radios.
@@ -18,7 +18,7 @@
 - `id`
   a string for id of your form. You should make your jsx component `<form id>` match.
 
-[Back to Contents](https://github.com/vineyard-bloom/bloom-forms#readme-contents)
+[Back to Contents](https://github.com/vineyard-bloom/bloom-context-forms#readme-contents)
 
 ## Optional Props
 - `validationHelp`
@@ -32,7 +32,7 @@
 - `wrapInFormElement`
   a boolean that will renders the form children inside of `<form></form>` instead of inside a React Fragment.
 
-[Back to Contents](https://github.com/vineyard-bloom/bloom-forms#readme-contents)
+[Back to Contents](https://github.com/vineyard-bloom/bloom-context-forms#readme-contents)
 
 ## Updating Form State
 Values can updated via the `updateField` method. You can stick it right on an input that passing in the event to onChange like:
@@ -57,7 +57,7 @@ function (e, fieldName, value, type='text') {
 }
 ```
 
-[Back to Contents](https://github.com/vineyard-bloom/bloom-forms#readme-contents)
+[Back to Contents](https://github.com/vineyard-bloom/bloom-context-forms#readme-contents)
 
 ## Validation
 
@@ -101,7 +101,7 @@ and the `<FormProvider>` around it would look like:
 ### Check multiple fields
 `checkMultipleFields` receives an array of field names and checks them synchronously.
 
-[Back to Contents](https://github.com/vineyard-bloom/bloom-forms#readme-contents)
+[Back to Contents](https://github.com/vineyard-bloom/bloom-context-forms#readme-contents)
 
 ## Prepopulating `<FormProvider />`
 To have your form populate with existing data, pass in a JSON object of key/value pairs where the keys match your fieldNames prop.
@@ -124,7 +124,7 @@ submitForm = async (formData, files, successCallback, failCallback) => {
 }
 ```
 
-[Back to Contents](https://github.com/vineyard-bloom/bloom-forms#readme-contents)
+[Back to Contents](https://github.com/vineyard-bloom/bloom-context-forms#readme-contents)
 
 ## Forms with Switch Inside
 // may not need this -- context continues to be passed down in most cases
@@ -158,4 +158,4 @@ class RegistrationFormSwitch extends React.Component {
 ```
 Now StepOne and StepTwo will both be able to receive their needed Form props, such as `updateField` and `addFormError`.
 
-[Back to Contents](https://github.com/vineyard-bloom/bloom-forms#readme-contents)
+[Back to Contents](https://github.com/vineyard-bloom/bloom-context-forms#readme-contents)

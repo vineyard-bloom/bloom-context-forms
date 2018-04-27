@@ -1,12 +1,12 @@
 # Bloom Context Forms
 
-#### A context-only alternative to [bloom-forms](https://github.com/vineyard-bloom/bloom-forms). No Redux here.
+#### A context-only alternative to [bloom-context-forms](https://github.com/vineyard-bloom/bloom-context-forms). No Redux here.
 
 ## What is this?
 Bloom-Context-Forms provides a FormProvider wrapper that manages your internal form state inside React 16's context. All updates, validation, and other hooks are available through connecting your component to the specific Context it consumes.
 
 ## Suggested Use
-It's suggested to use this package to manage your form state and validation, and use the [Bloom Inputs](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/inputs.md) package for accessible, stylable inputs.
+It's suggested to use this package to manage your form state and validation, and use the [Bloom Inputs](https://github.com/vineyard-bloom/bloom-inputs) package for accessible, stylable inputs.
 
 ## Features:
 - Standardized form value updates, regardless of input type.
@@ -33,14 +33,14 @@ It's suggested to use this package to manage your form state and validation, and
 
 ## README Contents:
 ### General:
-- [Set Up](https://github.com/vineyard-bloom/bloom-forms#set-up)
-- [Basic Usage](https://github.com/vineyard-bloom/bloom-forms#basic-usage)
-- [Contributing](https://github.com/vineyard-bloom/bloom-forms#contributing)
+- [Set Up](https://github.com/vineyard-bloom/bloom-context-forms#set-up)
+- [Basic Usage](https://github.com/vineyard-bloom/bloom-context-forms#basic-usage)
+- [Contributing](https://github.com/vineyard-bloom/bloom-context-forms#contributing)
 
-### [`FormContext` and its helper methods](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/form-context.md)
-### [`<FormProvider />` Wrapper](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/form-provider.md)
-### [What Props are passed down to child inputs?](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/children-props.md)
-### [Validation & Error Handling](https://github.com/vineyard-bloom/bloom-forms/blob/master/docs/validate-as-options.md)
+### [`FormContext` and its helper methods](https://github.com/vineyard-bloom/bloom-context-forms/blob/master/docs/form-context.md)
+### [`<FormProvider />` Wrapper](https://github.com/vineyard-bloom/bloom-context-forms/blob/master/docs/form-provider.md)
+### [What Props are passed down to child inputs?](https://github.com/vineyard-bloom/bloom-context-forms/blob/master/docs/children-props.md)
+### [Validation & Error Handling](https://github.com/vineyard-bloom/bloom-context-forms/blob/master/docs/validate-as-options.md)
 
 ## Setup
 To use this package, you can install with either npm or yarn.
@@ -62,4 +62,4 @@ Fork this repo, and submit any changes as a PR to master. Accepted PRs will be m
 
 ## Basic Usage
 
-[Back to Contents](https://github.com/vineyard-bloom/bloom-forms#readme-contents)
+[Back to Contents](https://github.com/vineyard-bloom/bloom-context-forms#readme-contents)

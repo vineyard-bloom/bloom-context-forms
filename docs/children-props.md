@@ -47,4 +47,4 @@ A complete list of these that are available via `this.props` are:
     an array of fields that are visible on the page. Must be updated manually after first mount by using `updateVisibleFields`
 
 
-[Back to Contents](https://github.com/vineyard-bloom/bloom-forms#readme-contents)
+[Back to Contents](https://github.com/vineyard-bloom/bloom-context-forms#readme-contents)

@@ -2,10 +2,10 @@
 
 The validator is a fully-functional aggregator of every field passed in, returing any errors on those fields.
 
-## Standard Usage with Bloom-Forms' Form wrapper:
+## Standard Usage with Bloom-Context-Forms' Form wrapper:
 1. Create a `validationHelp` object to pass into the Form wrapper:
 ```
-  import { Form } from 'bloom-forms'
+  import { Form } from 'bloom-context-forms'
 
   ...
 
@@ -22,7 +22,7 @@ The validator is a fully-functional aggregator of every field passed in, returin
   ...
 
   render() {
-    <Form fieldNames={ fieldNames }
+    <FormProvider fieldNames={ fieldNames }
       validationHelp={validationHelp}
       ...
     >
@@ -66,7 +66,7 @@ The validator is a fully-functional aggregator of every field passed in, returin
 
 4. And now use these three variables to pass into the aggregator:
 ```
-import { validator } from 'bloom-forms'
+import { validator } from 'bloom-context-forms'
 
 ...
 
