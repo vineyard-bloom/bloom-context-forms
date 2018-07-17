@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { FormContext } from './form-context'
+import { FormContext } from './'
 
 import { validatorAggregator as validator } from './validator'
+// import { getCurrentContext } from '.';
 
 const initialFormState = {
   attemptedSubmit: false,
@@ -19,7 +20,7 @@ const updateContextDangerously = (id, state) => {
   return FormContext._currentValue.updateForm(id, state)
 }
 
-class FormProvider extends React.Component {
+class FormHandler extends React.Component {
   state = {
     ...initialFormState,
     checkField: this.checkField,
@@ -48,7 +49,7 @@ class FormProvider extends React.Component {
       dictionary: PropTypes.object
     }),
     wrapInFormElement: PropTypes.bool
-  }
+  };
 
   componentDidMount() {
     if (this.props.prepopulateData) {
@@ -64,29 +65,38 @@ class FormProvider extends React.Component {
     this.updateVisibleFields()
 
     // ensure arrow-bound methods are passed into context
-    this.setState({
+    const newState = {
       checkField: this.checkField,
       checkMultipleFields: this.checkMultipleFields,
       updateVisibleFields: this.updateVisibleFields,
       updateField: this.updateField
-    }, () => {
-      updateContextDangerously(this.props.id, this.state)
-    })
+    }
+
+    this.setState(newState,
+      () => {
+        updateContextDangerously(this.props.id, { ...this.state, ...newState })
+      }
+    )
   }
 
-  componentWillReceiveProps(newProps) {
-    if (newProps.prepopulateData &&
-      (!this.props.prepopulateData ||
-        (Object.values(this.props.prepopulateData).sort().toString() !=
-        Object.values(newProps.prepopulateData).sort().toString())
-    )) {
+  componentDidUpdate(prevProps) {
+    const newProps = this.props
+    if (
+      newProps.prepopulateData &&
+      (!prevProps.prepopulateData ||
+        Object.values(prevProps.prepopulateData)
+          .sort()
+          .toString() !=
+          Object.values(newProps.prepopulateData)
+            .sort()
+            .toString())
+    ) {
       this.populateFields(newProps.fieldNames, newProps.prepopulateData)
     }
 
     if (
-      this.props.fieldNames &&
-      newProps.fieldNames.length !=
-        this.props.fieldNames.length
+      newProps.fieldNames && (!prevProps.fieldNames ||
+      (newProps.fieldNames.length != prevProps.fieldNames.length))
     ) {
       this.populateFields(newProps.fieldNames, null, this.state.fields)
     }
@@ -99,29 +109,32 @@ class FormProvider extends React.Component {
   }
 
   addFormError = (fieldName, error) => {
-    this.setState(state => ({
-      fields: {
-        ...state.fields,
-        [fieldName]: { ...state.fields[fieldName], error }
+    this.setState(
+      state => ({
+        fields: {
+          ...state.fields,
+          [fieldName]: { ...state.fields[fieldName], error }
+        }
+      }),
+      () => {
+        updateContextDangerously(this.props.id, this.state)
       }
-    }), () => {
-      updateContextDangerously(this.props.id, this.state)
-    })
-  }
+    )
+  };
 
-  checkField = async (e, fieldName=null) => {
-    // console.log(e, fieldName)
-    const name = e && e.target
-      ? e.target.getAttribute('name')
-      : fieldName
+  checkField = async (e, fieldName = null) => {
+    const name = e && e.target ? e.target.getAttribute('name') : fieldName
 
     if (!name) {
       return
     } else {
       const elem = document.getElementsByName(name)[0]
-      const isRequired = elem ? elem.getAttribute('aria-required') || elem.getAttribute('required') : false
+      const isRequired = elem
+        ? elem.getAttribute('aria-required') || elem.getAttribute('required')
+        : false
       const validateAs = elem ? elem.getAttribute('data-validate') : ''
-      const value = this.state.fields[name] && this.state.fields[name].value || ''
+      const value =
+        (this.state.fields[name] && this.state.fields[name].value) || ''
 
       try {
         // use the validator to find the status of all fields
@@ -136,7 +149,9 @@ class FormProvider extends React.Component {
           this.props.validationHelp
             ? this.props.validationHelp.errorLanguage
             : null,
-          this.props.validationHelp ? this.props.validationHelp.dictionary : null
+          this.props.validationHelp
+            ? this.props.validationHelp.dictionary
+            : null
         )
 
         const allowDeletion = !isRequired || (value && isRequired)
@@ -148,47 +163,58 @@ class FormProvider extends React.Component {
           this.addFormError(name, fieldStatus.warnings[name])
           return Promise.resolve(false)
         }
-      } catch(err) {
+      } catch (err) {
         throw new Error(err)
       }
     }
-  }
+  };
 
-  checkMultipleFields = async (fieldNamesArray=[]) => {
-    const allStatuses = await Promise.all(fieldNamesArray.map(name => this.checkField(null, name)))
-    const isAllValid = allStatuses.reduce((a,b) => a && b)
+  checkMultipleFields = async (fieldNamesArray = []) => {
+    const allStatuses = await Promise.all(
+      fieldNamesArray.map(name => this.checkField(null, name))
+    )
+    const isAllValid = allStatuses.reduce((a, b) => a && b)
     this.setState({ isAllValid })
-  }
+  };
 
   clearForm = async () => {
-    this.setState(state => ({
-      ...state,
-      ...initialFormState
-    }), () => {
-      updateContextDangerously(this.props.id, this.state)
-    })
-  }
-
-  createForm = (data) => {
-    this.setState({
-      ...data
-    }, () => {
-      updateContextDangerously(this.props.id, this.state)
-    })
-  }
-
-  deleteFormError = (fieldName) => {
-    if (this.state.fields[fieldName] && this.state.fields[fieldName].error) {
-      this.setState(state => ({
-        fields: {
-          ...state.fields,
-          [fieldName]: { value: state.fields[fieldName].value }
-        }
-      }), () => {
+    this.setState(
+      state => ({
+        ...state,
+        ...initialFormState
+      }),
+      () => {
         updateContextDangerously(this.props.id, this.state)
-      })
+      }
+    )
+  };
+
+  createForm = data => {
+    this.setState(
+      {
+        ...data
+      },
+      () => {
+        updateContextDangerously(this.props.id, this.state)
+      }
+    )
+  };
+
+  deleteFormError = fieldName => {
+    if (this.state.fields[fieldName] && this.state.fields[fieldName].error) {
+      this.setState(
+        state => ({
+          fields: {
+            ...state.fields,
+            [fieldName]: { value: state.fields[fieldName].value }
+          }
+        }),
+        () => {
+          updateContextDangerously(this.props.id, this.state)
+        }
+      )
     }
-  }
+  };
 
   focusOnFirst = () => {
     const form = document.getElementById(this.props.id)
@@ -198,7 +224,7 @@ class FormProvider extends React.Component {
         firstInput.focus()
       }
     }
-  }
+  };
 
   forwardToSubmitForm = async e => {
     // prepares the data to be in a submittable format after checking for errors
@@ -206,14 +232,19 @@ class FormProvider extends React.Component {
       e.preventDefault()
     }
 
-    this.setState({
-      attemptedSubmit: true,
-      processingRequest: true
-    }, () => {
-      updateContextDangerously(this.props.id, this.state)
-    })
+    this.setState(
+      {
+        attemptedSubmit: true,
+        processingRequest: true
+      },
+      () => {
+        updateContextDangerously(this.props.id, this.state)
+      }
+    )
 
-    const thisForm = { ...this.prepareFormDataForSubmit({ ...this.state.fields }) }
+    const thisForm = {
+      ...this.prepareFormDataForSubmit({ ...this.state.fields })
+    }
 
     const files = thisForm.files || new FormData()
     // if (thisForm.files) {
@@ -236,7 +267,7 @@ class FormProvider extends React.Component {
 
     return Promise.all(checkArr)
       .then(isValidValues => {
-        if ((isValidValues || []).reduce((a, b) => a && b)) {
+        if ((isValidValues || []).reduce((a, b) => a && b, true)) {
           const successCallback = () => {
             this.setState({
               processingRequest: false
@@ -244,11 +275,14 @@ class FormProvider extends React.Component {
           }
 
           const failCallback = () => {
-            this.setState({
-              processingRequest: false
-            }, () => {
-              updateContextDangerously(this.props.id, this.state)
-            })
+            this.setState(
+              {
+                processingRequest: false
+              },
+              () => {
+                updateContextDangerously(this.props.id, this.state)
+              }
+            )
           }
           if (this.props.testMode) {
             return {
@@ -268,23 +302,25 @@ class FormProvider extends React.Component {
         } else {
           delete thisForm.isValid
 
-          this.setState({
-            processingRequest: false
-          }, () => {
-            updateContextDangerously(this.props.id, this.state)
-          })
+          this.setState(
+            {
+              processingRequest: false
+            },
+            () => {
+              updateContextDangerously(this.props.id, this.state)
+            }
+          )
 
           // debugging helper
-          console.log(
-            `form id '${this.props.id}' has invalid fields`,
-            { ...this.state.fields }
-          )
+          console.error(`form id '${this.props.id}' has invalid fields`, {
+            ...this.state.fields
+          })
         }
       })
       .catch(err => {
         throw new Error(err)
       })
-  }
+  };
 
   populateFields = (fieldNames, prepopulateData, oldFields) => {
     const formData = { ...this.state }
@@ -339,7 +375,7 @@ class FormProvider extends React.Component {
     if (this.createForm) {
       this.createForm(formData)
     }
-  }
+  };
 
   prepareFormDataForSubmit = originalForm => {
     const thisForm = { ...originalForm }
@@ -375,19 +411,22 @@ class FormProvider extends React.Component {
     }
 
     return thisForm
-  }
+  };
 
-  updateField = (e=null, fieldName, value, optType, multi=false) => {
+  updateField = (e = null, fieldName, value, optType, multi = false) => {
     if (e && e.target) {
       if (!fieldName) {
         fieldName = e.target.getAttribute('name')
       }
 
       let val = value || e.target.value || ''
-      const type = optType ||
-        (
-          document.getElementById(fieldName) || [ ...document.getElementsByName(fieldName) ][0]
-        ).getAttribute('type') || 'text'
+      const type =
+        optType ||
+        (document && (
+          document.getElementById(fieldName) ||
+          [...document.getElementsByName(fieldName)][0]
+        ).getAttribute('type')) ||
+        'text'
 
       if (type === 'checkbox') {
         val = e.target.checked
@@ -399,37 +438,58 @@ class FormProvider extends React.Component {
         }
       }
 
-      this.setState((state) => ({
-        dirtyFields: state.dirtyFields.indexOf(fieldName) > -1 ? state.dirtyFields : [ ...state.dirtyFields, fieldName ],
-        fields: {
-          ...state.fields,
-          [fieldName]: { ...state.fields[fieldName], value: multi ? [ ...state.fields[fieldName], val ] : val }
+      this.setState(
+        state => ({
+          dirtyFields:
+            state.dirtyFields.indexOf(fieldName) > -1
+              ? state.dirtyFields
+              : [...state.dirtyFields, fieldName],
+          fields: {
+            ...state.fields,
+            [fieldName]: {
+              ...state.fields[fieldName],
+              value: multi ? [...state.fields[fieldName], val] : val
+            }
+          }
+        }),
+        () => {
+          updateContextDangerously(this.props.id, this.state)
         }
-      }), () => {
-        updateContextDangerously(this.props.id, this.state)
-      })
+      )
     } else {
       let val = value || ''
-      const type = optType ||
+      const type =
+        optType ||
         (
-          document.getElementById(fieldName) || [ ...document.getElementsByName(fieldName) ][0]
-        ).getAttribute('type') || 'text'
+          document.getElementById(fieldName) ||
+          [...document.getElementsByName(fieldName)][0]
+        ).getAttribute('type') ||
+        'text'
 
       if (type === 'checkbox') {
         val = !this.state.fields[fieldName].value
       }
 
-      this.setState((state) => ({
-        dirtyFields: state.dirtyFields.indexOf(fieldName) > -1 ? state.dirtyFields : [ ...state.dirtyFields, fieldName ],
-        fields: {
-          ...state.fields,
-          [fieldName]: { ...state.fields[fieldName], value: multi ? [ ...state.fields[fieldName], val ] : val }
+      this.setState(
+        state => ({
+          dirtyFields:
+            state.dirtyFields.indexOf(fieldName) > -1
+              ? state.dirtyFields
+              : [...state.dirtyFields, fieldName],
+          fields: {
+            ...state.fields,
+            [fieldName]: {
+              ...state.fields[fieldName],
+              value: multi ? [...state.fields[fieldName], val] : val
+            }
+          }
+        }),
+        () => {
+          updateContextDangerously(this.props.id, this.state)
         }
-      }), () => {
-        updateContextDangerously(this.props.id, this.state)
-      })
+      )
     }
-  }
+  };
 
   updateVisibleFields = formId => {
     const id = formId || this.props.id || this.props.formId
@@ -437,42 +497,44 @@ class FormProvider extends React.Component {
     if (form) {
       const matches = form.querySelectorAll('input, select, textarea')
       const fieldNames = new Set()
-      for (var i=0; i < matches.length; i++) {
+      for (var i = 0; i < matches.length; i++) {
         fieldNames.add(matches[i].getAttribute('name'))
       }
-      this.setState({
-        visibleFields: [ ...fieldNames ]
-      }, () => {
-        updateContextDangerously(this.props.id, this.state)
-      })
+      this.setState(
+        {
+          visibleFields: [...fieldNames]
+        },
+        () => {
+          updateContextDangerously(this.props.id, this.state)
+        }
+      )
     }
-  }
+  };
 
   render() {
-    const { children, className, id, wrapInFormElement } = this.props
+    const { children, id, wrapInFormElement, ...formProps } = this.props
     const childContext = {
       ...this.state,
+      checkField: this.checkField,
+      checkMultipleFields: this.checkMultipleFields,
       formId: id,
-      submitForm: this.forwardToSubmitForm
+      submitForm: this.forwardToSubmitForm,
+      updateVisibleFields: this.updateVisibleFields,
+      updateField: this.updateField
     }
-
-    // console.log(FormContext._currentValue)
 
     return (
       <FormContext.Provider value={{ [id]: childContext }}>
-        {
-          wrapInFormElement
-          ? (
-            <form id={id} className={className} noValidate>
-              {children}
-            </form>
-          ) : (
-            <React.Fragment>{children}</React.Fragment>
-          )
-        }
+        {wrapInFormElement ? (
+          <form id={id} noValidate {...formProps}>
+            {children}
+          </form>
+        ) : (
+          <React.Fragment>{children}</React.Fragment>
+        )}
       </FormContext.Provider>
     )
   }
 }
 
-export default FormProvider
+export default FormHandler

@@ -5,9 +5,7 @@ import ExampleForm from 'components'
 
 class AppRoot extends React.Component {
   render() {
-    return (
-      <ExampleForm />
-    )
+    return <ExampleForm />
   }
 }
 

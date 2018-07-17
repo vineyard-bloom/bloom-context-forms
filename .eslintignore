@@ -3,5 +3,4 @@
 ./dist/*
 ./scripts/*
 webpack.config.js
-index.js
-*.scss
+./index.js

@@ -13,11 +13,9 @@ import {
   TextInput,
   ToggleSwitch
 } from 'bloom-inputs'
-import { connectForm, getCurrentContext } from 'bloom-context-forms'
+import { connectForm } from 'bloom-context-forms'
 
 const ExampleForm = ({ context }) => {
-  // console.log(getCurrentContext('exampleForm'))
-  // console.log(context)
   // I am a reference form
   const formData = context.fields
   const radioOptions = [
@@ -255,4 +253,4 @@ const ExampleForm = ({ context }) => {
   )
 }
 
-export default props => connectForm('exampleForm', props)(ExampleForm)
+export default connectForm(ExampleForm)

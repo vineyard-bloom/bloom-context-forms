@@ -8,7 +8,7 @@ module.exports = {
   output: {
     filename: 'index.js',
     path: BUILD_DIR,
-    library: 'bloom-forms',
+    library: 'bloom-context-forms',
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
@@ -28,25 +28,6 @@ module.exports = {
             'transform-class-properties'
           ]
         }
-      },
-      {
-        test: /\.(png|jpe?g|gif|eot|ttf|woff|woff2|svg)$/,
-        loader: 'url-loader',
-        include: [
-          path.join(__dirname, 'src'),
-          path.join(__dirname, 'public/fonts')
-        ],
-        options: {
-          limit: 10000
-        }
-      },
-      {
-        test: /\.s?css$/,
-        use: [
-          { loader: 'style-loader' },
-          { loader: 'css-loader' },
-          { loader: 'sass-loader' }
-        ]
       }
     ]
   },
@@ -69,6 +50,6 @@ module.exports = {
   ],
 
   resolve: {
-    extensions: ['.webpack.js', '.web.js', '.jsx', '.js', '.html', '.scss']
+    extensions: ['.webpack.js', '.web.js', '.jsx', '.js', '.html']
   }
 };

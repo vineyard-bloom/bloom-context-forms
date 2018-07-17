@@ -1,12 +1,12 @@
 import React from 'react'
-import { FormProvider, getCurrentContext } from 'bloom-context-forms'
+import { FormHandler, getCurrentContext } from 'bloom-context-forms'
 
 import ExampleForm from './presentation/example-form'
 
 class ExampleFormContainer extends React.Component {
   rerouteAfterSubmit = () => {
     // this.props.history.push('/lending')
-  }
+  };
 
   submitForm = async (formData, files, successCallback, failCallback) => {
     // console.log(formData)
@@ -19,7 +19,7 @@ class ExampleFormContainer extends React.Component {
     } catch (err) {
       failCallback(err)
     }
-  }
+  };
 
   render() {
     const fieldNames = [
@@ -48,14 +48,14 @@ class ExampleFormContainer extends React.Component {
     }
 
     return (
-      <FormProvider
+      <FormHandler
         id='exampleForm'
         fieldNames={fieldNames}
         submitForm={this.submitForm}
         validationHelp={validationHelp}
       >
         <ExampleForm />
-      </FormProvider>
+      </FormHandler>
     )
   }
 }
