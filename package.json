@@ -14,7 +14,13 @@
     "type": "git",
     "url": "git+https://github.com/vineyard-bloom/bloom-context-forms.git"
   },
-  "keywords": ["bloom", "vineyard", "context", "react", "forms"],
+  "keywords": [
+    "bloom",
+    "vineyard",
+    "context",
+    "react",
+    "forms"
+  ],
   "lint-staged": {
     "*.{js,jsx}": [
       "prettier --config .prettierrc --write",
@@ -76,8 +82,16 @@
       "<rootDir>/__tests__/helpers/react-test-shim.js",
       "<rootDir>/__tests__/helpers/react-test-setup.js"
     ],
-    "moduleFileExtensions": ["js", "jsx", "json", "node"],
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
     "testRegex": "(/__tests__/.*|(\\.|/)(.test))\\.(jsx?|tsx?)$",
-    "testPathIgnorePatterns": ["/node_modules/", "/__tests__/helpers/*"]
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/__tests__/helpers/*"
+    ]
   }
 }

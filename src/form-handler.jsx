@@ -72,11 +72,9 @@ class FormHandler extends React.Component {
       updateField: this.updateField
     }
 
-    this.setState(newState,
-      () => {
-        updateContextDangerously(this.props.id, { ...this.state, ...newState })
-      }
-    )
+    this.setState(newState, () => {
+      updateContextDangerously(this.props.id, { ...this.state, ...newState })
+    })
   }
 
   componentDidUpdate(prevProps) {
@@ -95,8 +93,9 @@ class FormHandler extends React.Component {
     }
 
     if (
-      newProps.fieldNames && (!prevProps.fieldNames ||
-      (newProps.fieldNames.length != prevProps.fieldNames.length))
+      newProps.fieldNames &&
+      (!prevProps.fieldNames ||
+        newProps.fieldNames.length != prevProps.fieldNames.length)
     ) {
       this.populateFields(newProps.fieldNames, null, this.state.fields)
     }
@@ -422,10 +421,11 @@ class FormHandler extends React.Component {
       let val = value || e.target.value || ''
       const type =
         optType ||
-        (document && (
-          document.getElementById(fieldName) ||
-          [...document.getElementsByName(fieldName)][0]
-        ).getAttribute('type')) ||
+        (document &&
+          (
+            document.getElementById(fieldName) ||
+            [...document.getElementsByName(fieldName)][0]
+          ).getAttribute('type')) ||
         'text'
 
       if (type === 'checkbox') {
@@ -512,7 +512,18 @@ class FormHandler extends React.Component {
   };
 
   render() {
-    const { children, id, wrapInFormElement, ...formProps } = this.props
+    const {
+      children,
+      fieldNames,
+      id,
+      ignoreFocusOnFirstElement,
+      preserveAfterUnmount,
+      prepopulateData,
+      submitForm,
+      validationHelp,
+      wrapInFormElement,
+      ...formProps
+    } = this.props
     const childContext = {
       ...this.state,
       checkField: this.checkField,
