@@ -1,6 +1,6 @@
 {
   "name": "bloom-context-forms",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "context-wrapped form functionality for your bloom projects",
   "main": "index.js",
   "scripts": {
