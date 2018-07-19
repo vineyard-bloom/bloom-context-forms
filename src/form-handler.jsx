@@ -244,11 +244,7 @@ class FormHandler extends React.Component {
     const thisForm = {
       ...this.prepareFormDataForSubmit({ ...this.state.fields })
     }
-
     const files = thisForm.files || new FormData()
-    // if (thisForm.files) {
-    //   delete thisForm.files
-    // }
 
     // check each field if it's not a file or 'isValid'
     const checkArr = []
@@ -406,6 +402,20 @@ class FormHandler extends React.Component {
         } else if (field != 'isValid') {
           thisForm[field] = thisForm[field].value
         }
+      }
+    }
+
+    // double check all files are in thisForm.files
+    for (let key in thisForm) {
+      if (
+        typeof thisForm[key] === 'object' &&
+        thisForm[key].type &&
+        thisForm[key].name &&
+        thisForm[key].size &&
+        thisForm[key].lastModifiedDate
+      ) {
+        thisForm.files.append(key, thisForm[key])
+        delete thisForm[key]
       }
     }
 
