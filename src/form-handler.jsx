@@ -414,6 +414,9 @@ class FormHandler extends React.Component {
         thisForm[key].size &&
         thisForm[key].lastModifiedDate
       ) {
+        if (!thisForm.files) {
+          thisForm.files = new FormData()
+        }
         thisForm.files.append(key, thisForm[key])
         delete thisForm[key]
       }
