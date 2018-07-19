@@ -414,11 +414,14 @@ class FormHandler extends React.Component {
         thisForm[key].size &&
         thisForm[key].lastModifiedDate
       ) {
-        if (!thisForm.files) {
-          thisForm.files = new FormData()
+        thisForm.files = thisForm.files || new FormData()
+        if (thisForm.files) {
+          thisForm.files.append(key, thisForm[key])
+        } else {
+          console.log(
+            `detected file for key: ${key} but wasn't able to add it to files array`
+          )
         }
-        thisForm.files.append(key, thisForm[key])
-        delete thisForm[key]
       }
     }
 
